@@ -315,4 +315,5 @@ class rundeck::params {
   $security_roles_array_enabled = false
   $security_roles_array         = []
 
+  $manage_user = true
 }
