@@ -33,7 +33,15 @@ class rundeck::config::global::framework(
 
   ensure_resource('file', $properties_dir, {'ensure' => 'directory', 'owner' => $user, 'group' => $group } )
 
-  $framework_config = merge($framework_config_base, $framework_config_url, $framework_config_port)
+  ## Addition - JDF / 2017
+  ## User preferences should never be mangled in a way that *cannot* be altered without forking.
+  ## In this way, while the module attempts to make intelligent decisions for the user with sane
+  ## defaults, the final $framework_config takes into account the desires of the operator
+  ## in the end
+  ##
+  ## Compare this to https://github.com/voxpupuli/puppet-rundeck/blob/puppet3/manifests/config/global/framework.pp#L36
+  $_framework_config = merge($framework_config_base, $framework_config_url, $framework_config_port)
+  $framework_config = merge($_framework_config, $rundeck::framework_config)
 
   file { $properties_file:
     ensure  => present,
